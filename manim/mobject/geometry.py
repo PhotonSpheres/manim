@@ -58,6 +58,7 @@ __all__ = [
     "RightAngle",
 ]
 
+from manim.animation.fading import FadeIn
 import warnings
 import numpy as np
 import math
@@ -2105,11 +2106,15 @@ class Angle(Arc, Elbow):
         dot_distance=0.55,
         dot_color=WHITE,
         elbow=False,
+        fill_angle=False,
+        fill_opacity=0.5,
+        fill_color=WHITE,
         **kwargs
     ):
         self.quadrant = quadrant
         self.dot_distance = dot_distance
         self.elbow = elbow
+        self.fill_angle = fill_angle
         inter = line_intersection(
             [line1.get_start(), line1.get_end()], [line2.get_start(), line2.get_end()]
         )
@@ -2164,8 +2169,21 @@ class Angle(Arc, Elbow):
                 angle=angle_fin,
                 start_angle=start_angle,
                 arc_center=inter,
+                fill_opacity=0,
                 **kwargs
             )
+            if fill_angle:
+                fill = AnnularSector(
+                    arc_center=inter,
+                    stroke_width=0,
+                    stroke_opacity=0,
+                    fill_opacity=fill_opacity,
+                    color=fill_color,
+                    start_angle=start_angle,
+                    angle=angle_fin,
+                    inner_radius=0,
+                    outer_radius=radius)
+                self.add(fill)
             if dot:
                 if dot_radius is None:
                     dot_radius = radius / 10
